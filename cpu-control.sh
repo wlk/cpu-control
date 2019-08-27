@@ -22,6 +22,9 @@ echo "Expected enabled CPUs ${EXPECTED_ENABLED_CPU_COUNT}"
 CPU_COUNT_TO_DISABLE=0
 CPU_COUNT_TO_ENABLE=0
 
+#
+# Count if script should enable or disable CPUs based on input and available CPUs
+#
 if [ "$ENABLED_CPU_COUNT" -eq "$EXPECTED_ENABLED_CPU_COUNT" ]
 then
   echo "Enabled CPU count matches expected enabled CPU count, not doing anything"
@@ -37,6 +40,9 @@ fi
 echo "CPU id 0 is always enabled, you cannot disable it"
 
 for CPU_ID in $(seq 1 $(($TOTAL_CPU_COUNT -1))); do
+  #
+  # Modify CPU status
+  #
   CPU_PATH="/sys/devices/system/cpu/cpu${CPU_ID}/online"
   CPU_ENABLED=`cat $CPU_PATH`
   CPU_STATUS="unknown"
@@ -46,19 +52,22 @@ for CPU_ID in $(seq 1 $(($TOTAL_CPU_COUNT -1))); do
     if [ "$CPU_COUNT_TO_DISABLE" -gt 0 ]
     then
       CPU_COUNT_TO_DISABLE=$((CPU_COUNT_TO_DISABLE - 1))
-      echo 0 > $CPU_PATH
+      echo 0 > "$CPU_PATH"
     fi
   else
     CPU_STATUS="disabled"
      if [ "$CPU_COUNT_TO_ENABLE" -gt 0 ]
     then
       CPU_COUNT_TO_ENABLE=$((CPU_COUNT_TO_ENABLE - 1))
-      echo 1 > $CPU_PATH
+      echo 1 > "$CPU_PATH"
     fi
   fi
 
+  #
+  # Report statuses after script did the work
+  #
   NEW_CPU_STATUS="unknown"
-  NEW_CPU_ENABLED=`cat $CPU_PATH`
+  NEW_CPU_ENABLED=`cat "$CPU_PATH"`
   if [ "$NEW_CPU_ENABLED" -eq 1 ]
   then
     NEW_CPU_STATUS="enabled"
