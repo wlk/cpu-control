@@ -28,6 +28,6 @@ chmod +x /usr/sbin/cpu-control.sh
 # Enable in cron
 Just an example
 ```
-echo "30 7 * * *  /usr/sbin/cpu-control.sh 0.2" >>  /etc/cron.d/cpu-control-enable
-echo "0 17 * * *  /usr/sbin/cpu-control.sh 1" >>  /etc/cron.d/cpu-control-disable
+echo "30 7 * * 1-5  /usr/sbin/cpu-control.sh 0.2" >  /etc/cron.d/cpu-control-enable
+echo "0 17 * * 1-5  /usr/sbin/cpu-control.sh 1" >  /etc/cron.d/cpu-control-disable
 ```
